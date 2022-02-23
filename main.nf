@@ -8,7 +8,7 @@ def helpMessage() {
     log.info"""
     Analyze microbial pan-genomes using MIDAS
     Usage:
-    nextflow run kkerns85/midas_nextflow <ARGUMENTS>
+    
     Required Arguments:
       --manifest            CSV file listing samples (see below)
       --db_midas            Folder containing the MIDAS database

@@ -9,8 +9,6 @@ def helpMessage() {
     Build a microbial pan-genome database using MIDAS
 
     Usage:
-
-    nextflow run kkerns85/midas_nextflow/build_db.nf <ARGUMENTS>
     
     Required Arguments:
       --genome_folder       Folder with input genomes
