@@ -14,8 +14,7 @@ def helpMessage() {
       --db_midas            Folder containing the MIDAS database
       --db_knead            Folder containing the Kneaddata database
     Options:
-      --output_folder       Folder to place analysis outputs (default ./midas)
-      --output_prefix       Text used as a prefix for output files (default: midas)
+      --outdir       Folder to place analysis outputs (default ./midas)
       --species_cov         Coverage (depth) threshold for species inclusion (default: 3.0)
       --single              Input data is single-end (default: treat as paired-end)
       --merge_sample_depth  Corresponds to the --sample_depth parameter in the merge_midas.py command (default: 1.0)
@@ -72,13 +71,6 @@ if (file(params.db_midas).isEmpty()){
     exit 0
 }
 
-// Set default options, which are overridden by the user with, e.g., --output_folder OTHER_VALUE
-params.output_folder =  'midas'
-params.output_prefix =  'midas'
-params.species_cov = 3.0
-params.merge_sample_depth = 1.0
-params.single = false
-
 
 // Parse the manifest CSV
 // Along the way, make sure that the appropriate columns were provided
@@ -127,7 +119,8 @@ if (params.single){
 }
 
 process kneaddata {
-    container "biobakery/kneaddata:0.7.5_cloud"
+    tag "$sampleName"
+    container params.docker_container_kneaddata
     label 'mem_medium'
 
     input:
@@ -151,9 +144,10 @@ gzip ${sampleName}.R1_kneaddata.trimmed.[12].fastq
 }
 
 process midas {
-    container "quay.io/fhcrc-microbiome/midas:v1.3.2--6"
+    tag "$sampleName"
+    container params.docker_container_midas
     label "mem_veryhigh"
-    publishDir "${params.output_folder}/${sampleName}"
+    publishDir "${params.outdir}/${sampleName}"
 
     input:
     tuple val(sampleName), file("${sampleName}.R*.fastq.gz") from trimmed_fastq_ch
@@ -250,9 +244,9 @@ echo "Done"
 }
 
 process midas_merge_species {
-    container "quay.io/fhcrc-microbiome/midas:v1.3.2--6"
+    container params.docker_container_midas
     label "mem_veryhigh"
-    publishDir "${params.output_folder}"
+    publishDir "${params.outdir}"
 
     input:
     file species_tar_list from species_ch.toSortedList()
@@ -297,9 +291,9 @@ echo "Done"
 
 
 process midas_merge_genes {
-    container "quay.io/fhcrc-microbiome/midas:v1.3.2--6"
+    container params.docker_container_midas
     label "mem_veryhigh"
-    publishDir "${params.output_folder}"
+    publishDir "${params.outdir}"
 
     input:
     file genes_tar_list from gene_ch.toSortedList()
@@ -343,9 +337,9 @@ echo "Done"
 }
 
 process midas_merge_snps {
-    container "quay.io/fhcrc-microbiome/midas:v1.3.2--6"
+    container params.docker_container_midas
     label "mem_veryhigh"
-    publishDir "${params.output_folder}"
+    publishDir "${params.outdir}"
 
     input:
     file snps_tar_list from snps_ch.toSortedList()
