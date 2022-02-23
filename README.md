@@ -5,9 +5,8 @@
 Running Midas using Nextflow
 Optimized for Running on AWS Batch
 
-**Beta**
-
-This workflow is designed to help streamline bacterial metagenomic and metatranscriptomic data analysis using the Nextflow workflow manager. Raw reads (fastq or fastq.gz) are initailly passed through Kneaddata which initially trims raw reads via Trimmomatic (v. 0.33) and then aligns them via Bowtie2 (v. >= 2.2) and finally removes bacterial ribosomal RNA using the Silva rRNA database (v. 128). Trimmed, aligned, and filtered reads are then passed on to MIDAS in order to assign taxonomy using the Phy-Eco single-copy marker gene set and pangenome database (v1.2) which provides species taxonomic level assignment, gene content, and strain level variation via single-nucleotide-polymorphism (SNP's) analysis for each metagenome.
+> **Beta**
+> This workflow is designed to help streamline bacterial metagenomic and metatranscriptomic data analysis using the Nextflow workflow manager. Raw reads (fastq or fastq.gz) are initailly passed through Kneaddata which initially trims raw reads via Trimmomatic (v. 0.33) and then aligns them via Bowtie2 (v. >= 2.2) and finally removes bacterial ribosomal RNA using the Silva rRNA database (v. 128). Trimmed, aligned, and filtered reads are then passed on to MIDAS in order to assign taxonomy using the Phy-Eco single-copy marker gene set and pangenome database (v1.2) which provides species taxonomic level assignment, gene content, and strain level variation via single-nucleotide-polymorphism (SNP's) analysis for each metagenome.
 
 This minimal test_data set was developed using Saccharibacteria Nanosynbacter lyticus HMT 952, formerly TM7x, a egnimatic member of the candidate phyla radiation (CPR), further emphazing the application of this workflow.
 
