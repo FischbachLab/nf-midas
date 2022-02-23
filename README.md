@@ -14,6 +14,21 @@ This minimal test_data set was developed using Saccharibacteria Nanosynbacter ly
 
 - <https://www.nextflow.io/docs/latest/getstarted.html>
 
+## [OPTIONAL] Download/Update the Kneaddata database
+
+```{bash}
+mkdir -p /mnt/efs/databases/Biobakery/kneaddata
+cd /mnt/efs/databases/Biobakery/kneaddata
+docker container run \
+  --rm \
+  --volume $PWD:$PWD \
+  --workdir $PWD \
+  biobakery/workflows:3.0.0.a.7 \
+    kneaddata_database \
+      --download human_genome \
+      bowtie2 .
+```
+
 ## Input
 
 - Manifest file (Local)
