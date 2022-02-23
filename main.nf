@@ -21,7 +21,7 @@ def helpMessage() {
       --merge_sample_depth  Corresponds to the --sample_depth parameter in the merge_midas.py command (default: 1.0)
     Manifest:
       The manifest is a CSV with a header indicating which samples correspond to which files.
-      The file must contain a column `specimen`. This value can not be repeated.
+      The file must contain a column `sampleName`. This value can not be repeated.
       Data is only accepted as paired reads.
       Reads are specified by columns, `R1` and `R2`.
       If you specify --single, then only data from `R1` will be used
@@ -91,15 +91,15 @@ if (params.single){
             sep: ","
         )
     ).filter {
-        r -> (r.specimen != null)
+        r -> (r.sampleName != null)
     }.ifEmpty {
-        exit 1, "Cannot find values in the 'specimen' column: ${params.manifest}"
+        exit 1, "Cannot find values in the 'sampleName' column: ${params.manifest}"
     }.filter {
         r -> (r.R1 != null)
     }.ifEmpty {
         exit 1, "Cannot find values in the 'R1' column: ${params.manifest}"
     }.map {
-        r -> [r["specimen"], [file(r["R1"])]]
+        r -> [r["sampleName"], [file(r["R1"])]]
     }
 } else {
     fastq_ch = Channel.from(
@@ -110,9 +110,9 @@ if (params.single){
             sep: ","
         )
     ).filter {
-        r -> (r.specimen != null)
+        r -> (r.sampleName != null)
     }.ifEmpty {
-        exit 1, "Cannot find values in the 'specimen' column: ${params.manifest}"
+        exit 1, "Cannot find values in the 'sampleName' column: ${params.manifest}"
     }.filter {
         r -> (r.R1 != null)
     }.ifEmpty {
@@ -122,7 +122,7 @@ if (params.single){
     }.ifEmpty {
         exit 1, "Cannot find values in the 'R2' column: ${params.manifest}"
     }.map {
-        r -> [r["specimen"], [file(r["R1"]), file(r["R2"])]]
+        r -> [r["sampleName"], [file(r["R1"]), file(r["R2"])]]
     }
 }
 
@@ -131,74 +131,74 @@ process kneaddata {
     label 'mem_medium'
 
     input:
-    tuple val(specimen), file("${specimen}.R*.fastq.gz") from fastq_ch
+    tuple val(sampleName), file("${sampleName}.R*.fastq.gz") from fastq_ch
 
     output:
-    tuple val(specimen), file("${specimen}.R1_kneaddata.trimmed.*.fastq.gz") into trimmed_fastq_ch
+    tuple val(sampleName), file("${sampleName}.R1_kneaddata.trimmed.*.fastq.gz") into trimmed_fastq_ch
 
     """
 #!/bin/bash
 set -e
-if [[ -s ${specimen}.R2.fastq.gz ]]; then
-    kneaddata --input ${specimen}.R1.fastq.gz --input ${specimen}.R2.fastq.gz --output ./ -t ${task.cpus}
+if [[ -s ${sampleName}.R2.fastq.gz ]]; then
+    kneaddata --input ${sampleName}.R1.fastq.gz --input ${sampleName}.R2.fastq.gz --output ./ -t ${task.cpus}
 else
-    mv ${specimen}.R.fastq.gz ${specimen}.R1.fastq.gz
-    kneaddata --input ${specimen}.R1.fastq.gz --output ./ -t ${task.cpus}
-    mv ${specimen}.R1_kneaddata.trimmed.fastq ${specimen}.R1_kneaddata.trimmed.1.fastq
+    mv ${sampleName}.R.fastq.gz ${sampleName}.R1.fastq.gz
+    kneaddata --input ${sampleName}.R1.fastq.gz --output ./ -t ${task.cpus}
+    mv ${sampleName}.R1_kneaddata.trimmed.fastq ${sampleName}.R1_kneaddata.trimmed.1.fastq
 fi
-gzip ${specimen}.R1_kneaddata.trimmed.[12].fastq
+gzip ${sampleName}.R1_kneaddata.trimmed.[12].fastq
 """
 }
 
 process midas {
     container "quay.io/fhcrc-microbiome/midas:v1.3.2--6"
     label "mem_veryhigh"
-    publishDir "${params.output_folder}/${specimen}"
+    publishDir "${params.output_folder}/${sampleName}"
 
     input:
-    tuple val(specimen), file("${specimen}.R*.fastq.gz") from trimmed_fastq_ch
+    tuple val(sampleName), file("${sampleName}.R*.fastq.gz") from trimmed_fastq_ch
     file DB from file(params.db_midas)
 
     output:
-    file "${specimen}.species.tar.gz" into species_ch
-    file "${specimen}.genes.tar.gz" into gene_ch
-    file "${specimen}.snps.tar.gz" into snps_ch
+    file "${sampleName}.species.tar.gz" into species_ch
+    file "${sampleName}.genes.tar.gz" into gene_ch
+    file "${sampleName}.snps.tar.gz" into snps_ch
 
 """
 #!/bin/bash
 set -e
 echo "Running species summary"
 # If the input is single-end, change the filename to match the pattern used for paired-end
-if [[ ! -s ${specimen}.R2.fastq.gz ]]; then
-    mv ${specimen}.R.fastq.gz ${specimen}.R1.fastq.gz
+if [[ ! -s ${sampleName}.R2.fastq.gz ]]; then
+    mv ${sampleName}.R.fastq.gz ${sampleName}.R1.fastq.gz
 fi
 # Run the same command differently, depending on whether the input is single- or paired-end
-if [[ -s ${specimen}.R2.fastq.gz ]]; then
+if [[ -s ${sampleName}.R2.fastq.gz ]]; then
     # Run the species abundance summary
     run_midas.py \
         species \
-        ${specimen} \
-        -1 ${specimen}.R1.fastq.gz \
-        -2 ${specimen}.R2.fastq.gz \
+        ${sampleName} \
+        -1 ${sampleName}.R1.fastq.gz \
+        -2 ${sampleName}.R2.fastq.gz \
         -t ${task.cpus} \
         -d ${DB}
 else
     # Run the species abundance summary
     run_midas.py \
         species \
-        ${specimen} \
-        -1 ${specimen}.R1.fastq.gz \
+        ${sampleName} \
+        -1 ${sampleName}.R1.fastq.gz \
         -t ${task.cpus} \
         -d ${DB}
 fi
 # Run the gene abundance summary
-if [[ -s ${specimen}.R2.fastq.gz ]]; then
+if [[ -s ${sampleName}.R2.fastq.gz ]]; then
     echo "Running gene summary"
     run_midas.py \
         genes \
-        ${specimen} \
-        -1 ${specimen}.R1.fastq.gz \
-        -2 ${specimen}.R2.fastq.gz \
+        ${sampleName} \
+        -1 ${sampleName}.R1.fastq.gz \
+        -2 ${sampleName}.R2.fastq.gz \
         -t ${task.cpus} \
         -d ${DB} \
         --species_cov ${params.species_cov}
@@ -206,28 +206,28 @@ else
     echo "Running gene summary"
     run_midas.py \
         genes \
-        ${specimen} \
-        -1 ${specimen}.R1.fastq.gz \
+        ${sampleName} \
+        -1 ${sampleName}.R1.fastq.gz \
         -t ${task.cpus} \
         -d ${DB} \
         --species_cov ${params.species_cov}
 fi
 # Run the SNP summary
 echo "Running SNP summary"
-if [[ -s ${specimen}.R2.fastq.gz ]]; then
+if [[ -s ${sampleName}.R2.fastq.gz ]]; then
     run_midas.py \
         snps \
-        ${specimen} \
-        -1 ${specimen}.R1.fastq.gz \
-        -2 ${specimen}.R2.fastq.gz \
+        ${sampleName} \
+        -1 ${sampleName}.R1.fastq.gz \
+        -2 ${sampleName}.R2.fastq.gz \
         -t ${task.cpus} \
         -d ${DB} \
         --species_cov ${params.species_cov}
 else
     run_midas.py \
         snps \
-        ${specimen} \
-        -1 ${specimen}.R1.fastq.gz \
+        ${sampleName} \
+        -1 ${sampleName}.R1.fastq.gz \
         -t ${task.cpus} \
         -d ${DB} \
         --species_cov ${params.species_cov}
@@ -235,16 +235,16 @@ fi
 echo "Gathering output files"
 # Species-level results
 echo "Tarring up species results"
-tar cvf ${specimen}.species.tar ${specimen}/species/*
-gzip ${specimen}.species.tar
+tar cvf ${sampleName}.species.tar ${sampleName}/species/*
+gzip ${sampleName}.species.tar
 # Gene-level results
 echo "Tarring up gene results"
-tar cvf ${specimen}.genes.tar ${specimen}/genes/*
-gzip ${specimen}.genes.tar
+tar cvf ${sampleName}.genes.tar ${sampleName}/genes/*
+gzip ${sampleName}.genes.tar
 # SNP-level results
 echo "Tarring up SNP results"
-tar cvf ${specimen}.snps.tar ${specimen}/snps/*
-gzip ${specimen}.snps.tar
+tar cvf ${sampleName}.snps.tar ${sampleName}/snps/*
+gzip ${sampleName}.snps.tar
 echo "Done"
 """
 }
