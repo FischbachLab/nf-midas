@@ -60,7 +60,7 @@ if (file(params.db_midas).isEmpty()){
 }
 
 // Make sure that the Kneaddata database file can be found
-if (file(params.db_midas).isEmpty()){
+if (file(params.db_knead).isEmpty()){
 
     // Print a helpful log message
     log.info"""
@@ -125,6 +125,7 @@ process kneaddata {
 
     input:
     tuple val(sampleName), file("${sampleName}.R*.fastq.gz") from fastq_ch
+    file DB from file(params.db_knead)
 
     output:
     tuple val(sampleName), file("${sampleName}.R1_kneaddata.trimmed.*.fastq.gz") into trimmed_fastq_ch
@@ -133,10 +134,10 @@ process kneaddata {
 #!/bin/bash
 set -e
 if [[ -s ${sampleName}.R2.fastq.gz ]]; then
-    kneaddata --input ${sampleName}.R1.fastq.gz --input ${sampleName}.R2.fastq.gz --output ./ -t ${task.cpus}
+    kneaddata --input ${sampleName}.R1.fastq.gz --input ${sampleName}.R2.fastq.gz --output ./ -t ${task.cpus} -db ${DB}
 else
     mv ${sampleName}.R.fastq.gz ${sampleName}.R1.fastq.gz
-    kneaddata --input ${sampleName}.R1.fastq.gz --output ./ -t ${task.cpus}
+    kneaddata --input ${sampleName}.R1.fastq.gz --output ./ -t ${task.cpus} -db ${DB}
     mv ${sampleName}.R1_kneaddata.trimmed.fastq ${sampleName}.R1_kneaddata.trimmed.1.fastq
 fi
 gzip ${sampleName}.R1_kneaddata.trimmed.[12].fastq
