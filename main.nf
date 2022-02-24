@@ -71,6 +71,7 @@ if (file(params.manifest).isEmpty()){
 //     exit 0
 // }
 
+// Channel.fromPath( "${params.db_knead}", checkIfExists: true ).set { db_knead_ch }
 
 // Parse the manifest CSV
 // Along the way, make sure that the appropriate columns were provided
@@ -134,7 +135,7 @@ process kneaddata {
 
     input:
     tuple val(sampleName), file("${sampleName}.R*.fastq.gz") from fastq_ch
-    file DB from file(params.db_knead)
+    // file DB from file(params.db_knead)
 
     output:
     tuple val(sampleName), file("${sampleName}.R1_kneaddata.trimmed.*.fastq.gz") into trimmed_fastq_ch
@@ -143,10 +144,10 @@ process kneaddata {
 #!/bin/bash
 set -e
 if [[ -s ${sampleName}.R2.fastq.gz ]]; then
-    kneaddata --input ${sampleName}.R1.fastq.gz --input ${sampleName}.R2.fastq.gz --output ./ -t ${task.cpus} -db ${DB}
+    kneaddata --input ${sampleName}.R1.fastq.gz --input ${sampleName}.R2.fastq.gz --output ./ -t ${task.cpus} -db ${params.db_knead}
 else
     mv ${sampleName}.R.fastq.gz ${sampleName}.R1.fastq.gz
-    kneaddata --input ${sampleName}.R1.fastq.gz --output ./ -t ${task.cpus} -db ${DB}
+    kneaddata --input ${sampleName}.R1.fastq.gz --output ./ -t ${task.cpus} -db ${params.db_knead}
     mv ${sampleName}.R1_kneaddata.trimmed.fastq ${sampleName}.R1_kneaddata.trimmed.1.fastq
 fi
 gzip ${sampleName}.R1_kneaddata.trimmed.[12].fastq
@@ -161,7 +162,7 @@ process midas {
 
     input:
     tuple val(sampleName), file("${sampleName}.R*.fastq.gz") from trimmed_fastq_ch
-    file DB from file(params.db_midas)
+    // file DB from file(params.db_midas)
 
     output:
     file "${sampleName}.species.tar.gz" into species_ch
@@ -185,7 +186,7 @@ if [[ -s ${sampleName}.R2.fastq.gz ]]; then
         -1 ${sampleName}.R1.fastq.gz \
         -2 ${sampleName}.R2.fastq.gz \
         -t ${task.cpus} \
-        -d ${DB}
+        -d ${params.db_midas}
 else
     # Run the species abundance summary
     run_midas.py \
@@ -193,7 +194,7 @@ else
         ${sampleName} \
         -1 ${sampleName}.R1.fastq.gz \
         -t ${task.cpus} \
-        -d ${DB}
+        -d ${params.db_midas}
 fi
 # Run the gene abundance summary
 if [[ -s ${sampleName}.R2.fastq.gz ]]; then
@@ -204,7 +205,7 @@ if [[ -s ${sampleName}.R2.fastq.gz ]]; then
         -1 ${sampleName}.R1.fastq.gz \
         -2 ${sampleName}.R2.fastq.gz \
         -t ${task.cpus} \
-        -d ${DB} \
+        -d ${params.db_midas} \
         --species_cov ${params.species_cov}
 else
     echo "Running gene summary"
@@ -213,7 +214,7 @@ else
         ${sampleName} \
         -1 ${sampleName}.R1.fastq.gz \
         -t ${task.cpus} \
-        -d ${DB} \
+        -d ${params.db_midas} \
         --species_cov ${params.species_cov}
 fi
 # Run the SNP summary
@@ -225,7 +226,7 @@ if [[ -s ${sampleName}.R2.fastq.gz ]]; then
         -1 ${sampleName}.R1.fastq.gz \
         -2 ${sampleName}.R2.fastq.gz \
         -t ${task.cpus} \
-        -d ${DB} \
+        -d ${params.db_midas} \
         --species_cov ${params.species_cov}
 else
     run_midas.py \
@@ -233,7 +234,7 @@ else
         ${sampleName} \
         -1 ${sampleName}.R1.fastq.gz \
         -t ${task.cpus} \
-        -d ${DB} \
+        -d ${params.db_midas} \
         --species_cov ${params.species_cov}
 fi
 echo "Gathering output files"
@@ -260,7 +261,7 @@ process midas_merge_species {
 
     input:
     file species_tar_list from species_ch.toSortedList()
-    file DB from file(params.db_midas)
+    // file DB from file(params.db_midas)
 
     output:
     file "SPECIES/*"
@@ -289,7 +290,7 @@ merge_midas.py \
     SPECIES \
     -i \$input_string \
     -t list \
-    -d ${DB} \
+    -d ${params.db_midas} \
     --sample_depth ${params.merge_sample_depth}
 echo "Done merging data"
 ls -lahtr SPECIES
@@ -307,7 +308,7 @@ process midas_merge_genes {
 
     input:
     file genes_tar_list from gene_ch.toSortedList()
-    file DB from file(params.db_midas)
+    // file DB from file(params.db_midas)
 
     output:
     file "GENES/*"
@@ -336,7 +337,7 @@ merge_midas.py \
     GENES \
     -i \$input_string \
     -t list \
-    -d ${DB} \
+    -d ${params.db_midas} \
     --sample_depth ${params.merge_sample_depth}
 echo "Done merging data"
 ls -lahtr GENES
@@ -353,7 +354,7 @@ process midas_merge_snps {
 
     input:
     file snps_tar_list from snps_ch.toSortedList()
-    file DB from file(params.db_midas)
+    // file DB from file(params.db_midas)
 
     output:
     file "SNPS/*"
@@ -382,7 +383,7 @@ merge_midas.py \
     SNPS \
     -i \$input_string \
     -t list \
-    -d ${DB} \
+    -d ${params.db_midas} \
     --sample_depth ${params.merge_sample_depth}
 echo "Done merging data"
 touch SNPS/DONE
