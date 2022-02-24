@@ -158,7 +158,7 @@ process midas {
     tag "$sampleName"
     container params.docker_container_midas
     label "mem_veryhigh"
-    publishDir "${params.workingpath}/${sampleName}"
+    publishDir "${workingpath}/${sampleName}"
 
     input:
     tuple val(sampleName), file("${sampleName}.R*.fastq.gz") from trimmed_fastq_ch
@@ -257,7 +257,7 @@ echo "Done"
 process midas_merge_species {
     container params.docker_container_midas
     label "mem_veryhigh"
-    publishDir "${params.workingpath}"
+    publishDir "${workingpath}"
 
     input:
     file species_tar_list from species_ch.toSortedList()
@@ -304,7 +304,7 @@ echo "Done"
 process midas_merge_genes {
     container params.docker_container_midas
     label "mem_veryhigh"
-    publishDir "${params.workingpath}"
+    publishDir "${workingpath}"
 
     input:
     file genes_tar_list from gene_ch.toSortedList()
@@ -350,7 +350,7 @@ echo "Done"
 process midas_merge_snps {
     container params.docker_container_midas
     label "mem_veryhigh"
-    publishDir "${params.workingpath}"
+    publishDir "${workingpath}"
 
     input:
     file snps_tar_list from snps_ch.toSortedList()
