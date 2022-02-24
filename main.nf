@@ -48,28 +48,28 @@ if (file(params.manifest).isEmpty()){
 }
 
 // Make sure that the Midas database file can be found
-if (file(params.db_midas).isEmpty()){
+// if (file(params.db_midas).isEmpty()){
 
-    // Print a helpful log message
-    log.info"""
-    Cannot find the file specified by --db_midas ${params.db_midas}
-    """.stripIndent()
+//     // Print a helpful log message
+//     log.info"""
+//     Cannot find the file specified by --db_midas ${params.db_midas}
+//     """.stripIndent()
 
-    // Exit out and do not run anything else
-    exit 0
-}
+//     // Exit out and do not run anything else
+//     exit 0
+// }
 
 // Make sure that the Kneaddata database file can be found
-if (file(params.db_knead).isEmpty()){
+// if (file(params.db_knead).isEmpty()){
 
-    // Print a helpful log message
-    log.info"""
-    Cannot find the file specified by --db_knead ${params.db_knead}
-    """.stripIndent()
+//     // Print a helpful log message
+//     log.info"""
+//     Cannot find the file specified by --db_knead ${params.db_knead}
+//     """.stripIndent()
 
-    // Exit out and do not run anything else
-    exit 0
-}
+//     // Exit out and do not run anything else
+//     exit 0
+// }
 
 
 // Parse the manifest CSV
