@@ -118,6 +118,15 @@ if (params.single){
     }
 }
 
+
+workingpath = params.outdir + "/" + params.project
+workingdir = file(workingpath)
+if( !workingdir.exists() ) {
+	if( !workingdir.mkdirs() ) 	{
+		exit 1, "Cannot create working directory: $workingpath"
+	} 
+}
+
 process kneaddata {
     tag "$sampleName"
     container params.docker_container_kneaddata
@@ -148,7 +157,7 @@ process midas {
     tag "$sampleName"
     container params.docker_container_midas
     label "mem_veryhigh"
-    publishDir "${params.outdir}/${sampleName}"
+    publishDir "${params.workingpath}/${sampleName}"
 
     input:
     tuple val(sampleName), file("${sampleName}.R*.fastq.gz") from trimmed_fastq_ch
@@ -247,7 +256,7 @@ echo "Done"
 process midas_merge_species {
     container params.docker_container_midas
     label "mem_veryhigh"
-    publishDir "${params.outdir}"
+    publishDir "${params.workingpath}"
 
     input:
     file species_tar_list from species_ch.toSortedList()
@@ -294,7 +303,7 @@ echo "Done"
 process midas_merge_genes {
     container params.docker_container_midas
     label "mem_veryhigh"
-    publishDir "${params.outdir}"
+    publishDir "${params.workingpath}"
 
     input:
     file genes_tar_list from gene_ch.toSortedList()
@@ -340,7 +349,7 @@ echo "Done"
 process midas_merge_snps {
     container params.docker_container_midas
     label "mem_veryhigh"
-    publishDir "${params.outdir}"
+    publishDir "${params.workingpath}"
 
     input:
     file snps_tar_list from snps_ch.toSortedList()
