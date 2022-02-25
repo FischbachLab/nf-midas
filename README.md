@@ -47,11 +47,9 @@ mouse_C57BL : bowtie2 = http://huttenhower.sph.harvard.edu/kneadData_databases/m
   - Metadata additional Columns with simple header format
 - Work directory (Local or S3://)
 - Path to Midas Database (Local or S3://)
-- Path to Kneaddata Database (Human, Mouse, and/or Bacterial rRNA) (Local or S3://)
 
 ## Output
 
-- Trimmed and Filtered Reads from Kneaddata (Stored Local or S3://)
 - Species Analysis from MiDAS
 - Gene Analysis from MiDAS
 - SNP Analysis from MiDAS
@@ -60,7 +58,6 @@ mouse_C57BL : bowtie2 = http://huttenhower.sph.harvard.edu/kneadData_databases/m
 ## Options
 
 - --single            Run single end reads
-- --no_knead          Skip kneaddata process (default: false)
 - --profile           local or AWS batch
 - --output_folder     Folder to place analysis outputs (default ./midas)
 - --output_prefix     Text used as a prefix for output files (default: midas)
