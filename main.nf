@@ -167,90 +167,17 @@ process midas {
     file "${sampleName}.species.tar.gz" into species_ch
     file "${sampleName}.genes.tar.gz" into gene_ch
     file "${sampleName}.snps.tar.gz" into snps_ch
+    file "job.*" optional true
+    file "*.log.txt" optional true
 
-"""
-#!/bin/bash
-set -e
-echo "Running species summary"
-# If the input is single-end, change the filename to match the pattern used for paired-end
-if [[ ! -s ${sampleName}.R2.fastq.gz ]]; then
-    mv ${sampleName}.R.fastq.gz ${sampleName}.R1.fastq.gz
-fi
-# Run the same command differently, depending on whether the input is single- or paired-end
-if [[ -s ${sampleName}.R2.fastq.gz ]]; then
-    # Run the species abundance summary
-    run_midas.py \
-        species \
-        ${sampleName} \
-        -1 ${sampleName}.R1.fastq.gz \
-        -2 ${sampleName}.R2.fastq.gz \
-        -t ${task.cpus} \
-        -d ${params.db_midas}
-else
-    # Run the species abundance summary
-    run_midas.py \
-        species \
-        ${sampleName} \
-        -1 ${sampleName}.R1.fastq.gz \
-        -t ${task.cpus} \
-        -d ${params.db_midas}
-fi
-# Run the gene abundance summary
-if [[ -s ${sampleName}.R2.fastq.gz ]]; then
-    echo "Running gene summary"
-    run_midas.py \
-        genes \
-        ${sampleName} \
-        -1 ${sampleName}.R1.fastq.gz \
-        -2 ${sampleName}.R2.fastq.gz \
-        -t ${task.cpus} \
-        -d ${params.db_midas} \
-        --species_cov ${params.species_cov}
-else
-    echo "Running gene summary"
-    run_midas.py \
-        genes \
-        ${sampleName} \
-        -1 ${sampleName}.R1.fastq.gz \
-        -t ${task.cpus} \
-        -d ${params.db_midas} \
-        --species_cov ${params.species_cov}
-fi
-# Run the SNP summary
-echo "Running SNP summary"
-if [[ -s ${sampleName}.R2.fastq.gz ]]; then
-    run_midas.py \
-        snps \
-        ${sampleName} \
-        -1 ${sampleName}.R1.fastq.gz \
-        -2 ${sampleName}.R2.fastq.gz \
-        -t ${task.cpus} \
-        -d ${params.db_midas} \
-        --species_cov ${params.species_cov}
-else
-    run_midas.py \
-        snps \
-        ${sampleName} \
-        -1 ${sampleName}.R1.fastq.gz \
-        -t ${task.cpus} \
-        -d ${params.db_midas} \
-        --species_cov ${params.species_cov}
-fi
-echo "Gathering output files"
-# Species-level results
-echo "Tarring up species results"
-tar cvf ${sampleName}.species.tar ${sampleName}/species/*
-gzip ${sampleName}.species.tar
-# Gene-level results
-echo "Tarring up gene results"
-tar cvf ${sampleName}.genes.tar ${sampleName}/genes/*
-gzip ${sampleName}.genes.tar
-# SNP-level results
-echo "Tarring up SNP results"
-tar cvf ${sampleName}.snps.tar ${sampleName}/snps/*
-gzip ${sampleName}.snps.tar
-echo "Done"
-"""
+    """
+    export FWD_FASTQ="${sampleName}.R1.fastq.gz";\\
+    export REV_FASTQ="${sampleName}.R2.fastq.gz";\\
+    export DB=${params.db_midas};\\
+    export CORES=${task.cpus};\\
+    export SAMPLE_NAME=${sampleName};\\
+    run_midas.sh
+    """
 }
 
 process midas_merge_species {
