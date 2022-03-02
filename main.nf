@@ -171,11 +171,11 @@ process midas {
     file "*.log.txt" optional true
 
     """
-    export FWD_FASTQ="${sampleName}.R1.fastq.gz";\\
-    export REV_FASTQ="${sampleName}.R2.fastq.gz";\\
-    export DB=${params.db_midas};\\
-    export CORES=${task.cpus};\\
-    export SAMPLE_NAME=${sampleName};\\
+    export FWD_FASTQ="${sampleName}.R1.fastq.gz"; \
+    export REV_FASTQ="${sampleName}.R2.fastq.gz"; \
+    export DB=${params.db_midas}; \
+    export CORES=${task.cpus}; \
+    export SAMPLE_NAME=${sampleName}; \
     run_midas.sh
     """
 }
