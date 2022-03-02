@@ -6,6 +6,7 @@ set -euo pipefail
 # DB
 CORES=${CORES:1}
 REV_FASTQ=${REV_FASTQ:-}
+START_TIME=$SECONDS
 
 exit_handler () {
     # accepts 2 variables. 1) Exit status 2) Message
