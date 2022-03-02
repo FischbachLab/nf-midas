@@ -5,7 +5,7 @@ set -euo pipefail
 # FWD_FASTQ
 # DB
 CORES=${CORES:1}
-REV_FASTQ=${REV_FASTQ:''}
+REV_FASTQ=${REV_FASTQ:-}
 
 exit_handler () {
     # accepts 2 variables. 1) Exit status 2) Message
@@ -27,7 +27,7 @@ exit_handler () {
 
 MIDAS_SPECIES_PARAMS="-t ${CORES} -d ${DB} --remove_temp"
 ### Single end
-if [[ -n ${FWD_FASTQ} ]]; then
+if [[ -s ${FWD_FASTQ} ]]; then
     MIDAS_SPECIES_PARAMS="${MIDAS_SPECIES_PARAMS} -1 ${FWD_FASTQ}"
 else
     # Probably 
