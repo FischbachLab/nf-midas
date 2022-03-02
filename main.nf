@@ -12,11 +12,9 @@ def helpMessage() {
     Required Arguments:
       --manifest            CSV file listing samples (see below)
       --db_midas            Folder containing the MIDAS database
-    //   --db_knead            Folder containing the Kneaddata database
     Options:
       --outdir       Folder to place analysis outputs (default ./midas)
       --species_cov         Coverage (depth) threshold for species inclusion (default: 3.0)
-      --single              Input data is single-end (default: treat as paired-end)
       --merge_sample_depth  Corresponds to the --sample_depth parameter in the merge_midas.py command (default: 1.0)
     Manifest:
       The manifest is a CSV with a header indicating which samples correspond to which files.
