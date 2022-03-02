@@ -191,7 +191,7 @@ process midas_merge_species {
     file "SPECIES/*"
 
 """
-#!/bin/bash
+#!/bin/bash -x
 set -e
 ls -lahtr
 # Keep track of the folders created while unpacking input files
@@ -237,7 +237,7 @@ process midas_merge_genes {
     file "GENES/*"
 
 """
-#!/bin/bash
+#!/bin/bash -x
 set -e
 ls -lahtr
 # Keep track of the folders created while unpacking input files
@@ -283,7 +283,7 @@ process midas_merge_snps {
     file "SNPS/*"
 
 """
-#!/bin/bash
+#!/bin/bash -x
 set -e
 ls -lahtr
 # Keep track of the folders created while unpacking input files
