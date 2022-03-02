@@ -18,4 +18,4 @@ jobs:
           NXF_VER=20.10.0 nextflow run build_db.nf -c nextflow.config -profile testing --genome_folder test_data/genomes --mapfile test_data/genomes.mapfile --output_folder db/ -with-docker ubuntu:18.04 -w work/ -process.executor local
       - name: Process paired-ended data
         run: |
-          NXF_VER=20.10.0 nextflow run main.nf -c nextflow.config -profile testing --manifest test_data/manifest.paired.csv --db_midas db/ --output_folder test_output/paired/ --species_cov 0.01 --merge_sample_depth 0.01 -with-docker ubuntu:18.04 -w work/ -process.executor local
+          NXF_VER=20.10.0 nextflow run main.nf -c nextflow.config -profile testing --manifest test_data/manifest.paired.csv --db_midas db/ --outdir test_output/paired/ --species_cov 0.01 --merge_sample_depth 0.01 -with-docker ubuntu:18.04 -w work/ -process.executor local
