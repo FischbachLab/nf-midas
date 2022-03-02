@@ -163,8 +163,8 @@ process midas {
 
     output:
     file "${sampleName}.species.tar.gz" into species_ch
-    file "${sampleName}.genes.tar.gz" into gene_ch
-    file "${sampleName}.snps.tar.gz" into snps_ch
+    file "${sampleName}.genes.tar.gz" optional true into gene_ch
+    file "${sampleName}.snps.tar.gz" optional true into snps_ch
     file "job.*" optional true
     file "*.log.txt" optional true
 
@@ -232,7 +232,6 @@ process midas_merge_genes {
 
     input:
     file genes_tar_list from gene_ch.toSortedList()
-    // file DB from file(params.db_midas)
 
     output:
     file "GENES/*"
