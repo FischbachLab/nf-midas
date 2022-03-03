@@ -27,7 +27,7 @@ aws batch submit-job \
 
 ```bash
 aws batch submit-job \
-    --job-name nf-midas-0302-2 \
+    --job-name nf-midas-hComB6Gen \
     --job-queue priority-maf-pipelines \
     --job-definition nextflow-production \
     --container-overrides command=FischbachLab/nf-midas,\
