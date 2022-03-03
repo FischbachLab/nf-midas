@@ -1,5 +1,7 @@
 # nf-midas
 
+[![MIDAS Continuous Integration](https://github.com/FischbachLab/nf-midas/actions/workflows/test.yaml/badge.svg)](https://github.com/FischbachLab/nf-midas/actions/workflows/test.yaml)
+
 (fork of [midas_nextflow](https://github.com/kkerns85/midas_nextflow))
 
 Running Midas using Nextflow
