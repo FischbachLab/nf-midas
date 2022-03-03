@@ -4,8 +4,8 @@ set -euo pipefail
 
 # FWD_FASTQ
 # DB
-CORES=${CORES:1}
-REV_FASTQ=${REV_FASTQ:-}
+# REV_FASTQ=${REV_FASTQ:-}
+CORES=${CORES:-2}
 START_TIME=$SECONDS
 
 exit_handler () {
@@ -38,9 +38,6 @@ fi
 ### Paired
 if [[ -n ${REV_FASTQ:-} ]]; then
     MIDAS_SPECIES_PARAMS="${MIDAS_SPECIES_PARAMS} -2 ${REV_FASTQ}"
-else
-    # Probably 
-    exit_handler 1 "[FATAL] Missing REV fastq file."
 fi
 
 ## Set up parameters for Midas Genes and SNP
