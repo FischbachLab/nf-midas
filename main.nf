@@ -12,6 +12,8 @@ def helpMessage() {
     Required Arguments:
       --manifest            CSV file listing samples (see below)
       --db_midas            Folder containing the MIDAS database
+      --project             Broad project/study this data belongs to.
+      --prefix              Specific version of the data being analyzed. Todays date in YYYYMMDD format is acceptable if prefix is unknown.
     Options:
       --outdir       Folder to place analysis outputs (default ./midas)
       --species_cov         Coverage (depth) threshold for species inclusion (default: 3.0)
