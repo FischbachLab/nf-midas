@@ -118,13 +118,20 @@ if (params.single){
 }
 
 
+//Creates working dir
 workingpath = params.outdir + "/" + params.project
 workingdir = file(workingpath)
+
 if( !workingdir.exists() ) {
-	if( !workingdir.mkdirs() ) 	{
-		exit 1, "Cannot create working directory: $workingpath"
-	} 
+    if( !workingdir.mkdirs() )     {
+        exit 1, "Cannot create working directory: $workingpath"
+    } 
+}    
+
+if(params.prefix){
+    workingpath = workingpath + "/" + params.prefix
 }
+
 
 // process kneaddata {
 //     tag "$sampleName"
