@@ -190,7 +190,7 @@ for tarfile in ${species_tar_list}; do
 done
 # Remove the leading comma from the input string
 input_string=\$( echo \$input_string | sed 's/^,//' )
-if [ -n $input_string ]; then
+if [ -z $input_string ]; then
     echo "[SPECIES]: Input string is empty. Nothing to do here."
     mkdir -p SPECIES
     touch SPECIES/NOT_ENOUGH_DATA
@@ -243,7 +243,7 @@ for tarfile in ${genes_tar_list}; do
 done
 # Remove the leading comma from the input string
 input_string=\$( echo \$input_string | sed 's/^,//' )
-if [ -n $input_string ]; then
+if [ -z $input_string ]; then
     echo "[GENES]: Input string is empty. Nothing to do here."
     mkdir -p GENES
     touch GENES/NOT_ENOUGH_DATA
@@ -297,7 +297,7 @@ done
 # Remove the leading comma from the input string
 input_string=\$( echo \$input_string | sed 's/^,//' )
 
-if [ -n $input_string ]; then
+if [ -z $input_string ]; then
     echo "[SNPS]: Input string is empty. Nothing to do here."
     mkdir -p SNPS
     touch SNPS/NOT_ENOUGH_DATA
