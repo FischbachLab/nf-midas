@@ -132,33 +132,6 @@ if(params.prefix){
     workingpath = workingpath + "/" + params.prefix
 }
 
-
-// process kneaddata {
-//     tag "$sampleName"
-//     container params.docker_container_kneaddata
-//     label 'mem_medium'
-
-//     input:
-//     tuple val(sampleName), file("${sampleName}.R*.fastq.gz") from fastq_ch
-//     // file DB from file(params.db_knead)
-
-//     output:
-//     tuple val(sampleName), file("${sampleName}.R1_kneaddata.trimmed.*.fastq.gz") into trimmed_fastq_ch
-
-//     """
-// #!/bin/bash
-// set -e
-// if [[ -s ${sampleName}.R2.fastq.gz ]]; then
-//     kneaddata --input ${sampleName}.R1.fastq.gz --input ${sampleName}.R2.fastq.gz --output ./ -t ${task.cpus} -db ${params.db_knead}
-// else
-//     mv ${sampleName}.R.fastq.gz ${sampleName}.R1.fastq.gz
-//     kneaddata --input ${sampleName}.R1.fastq.gz --output ./ -t ${task.cpus} -db ${params.db_knead}
-//     mv ${sampleName}.R1_kneaddata.trimmed.fastq ${sampleName}.R1_kneaddata.trimmed.1.fastq
-// fi
-// gzip ${sampleName}.R1_kneaddata.trimmed.[12].fastq
-// """
-// }
-
 process midas {
     tag "$sampleName"
     container params.docker_container_midas
