@@ -190,14 +190,19 @@ for tarfile in ${species_tar_list}; do
 done
 # Remove the leading comma from the input string
 input_string=\$( echo \$input_string | sed 's/^,//' )
-echo "Merging species results"
-merge_midas.py \
-    species \
-    SPECIES \
-    -i \$input_string \
-    -t list \
-    -d ${params.db_midas} \
-    --sample_depth ${params.merge_sample_depth}
+if [ -n $input_string ]; then
+    echo "[SPECIES]: Input string is empty. Nothing to do here."
+    mkdir -p SPECIES
+else
+    echo "Merging species results"
+    merge_midas.py \
+        species \
+        SPECIES \
+        -i \$input_string \
+        -t list \
+        -d ${params.db_midas} \
+        --sample_depth ${params.merge_sample_depth}
+fi
 echo "Done merging data"
 ls -lahtr SPECIES
 echo "Compressing output files"
@@ -236,14 +241,19 @@ for tarfile in ${genes_tar_list}; do
 done
 # Remove the leading comma from the input string
 input_string=\$( echo \$input_string | sed 's/^,//' )
-echo "Merging gene results"
-merge_midas.py \
-    genes \
-    GENES \
-    -i \$input_string \
-    -t list \
-    -d ${params.db_midas} \
-    --sample_depth ${params.merge_sample_depth}
+if [ -n $input_string ]; then
+    echo "[GENES]: Input string is empty. Nothing to do here."
+    mkdir -p GENES
+else
+    echo "Merging gene results"
+    merge_midas.py \
+        genes \
+        GENES \
+        -i \$input_string \
+        -t list \
+        -d ${params.db_midas} \
+        --sample_depth ${params.merge_sample_depth}
+fi
 echo "Done merging data"
 ls -lahtr GENES
 echo "Compressing output files"
@@ -282,14 +292,20 @@ for tarfile in ${snps_tar_list}; do
 done
 # Remove the leading comma from the input string
 input_string=\$( echo \$input_string | sed 's/^,//' )
-echo "Merging snps results"
-merge_midas.py \
-    snps \
-    SNPS \
-    -i \$input_string \
-    -t list \
-    -d ${params.db_midas} \
-    --sample_depth ${params.merge_sample_depth}
+
+if [ -n $input_string ]; then
+    echo "[SNPS]: Input string is empty. Nothing to do here."
+    mkdir -p SNPS
+else
+    echo "Merging snps results"
+    merge_midas.py \
+        snps \
+        SNPS \
+        -i \$input_string \
+        -t list \
+        -d ${params.db_midas} \
+        --sample_depth ${params.merge_sample_depth}
+fi
 echo "Done merging data"
 touch SNPS/DONE
 ls -lahtr SNPS
