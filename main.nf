@@ -193,6 +193,7 @@ input_string=\$( echo \$input_string | sed 's/^,//' )
 if [ -n $input_string ]; then
     echo "[SPECIES]: Input string is empty. Nothing to do here."
     mkdir -p SPECIES
+    touch SPECIES/NOT_ENOUGH_DATA
 else
     echo "Merging species results"
     merge_midas.py \
@@ -202,6 +203,7 @@ else
         -t list \
         -d ${params.db_midas} \
         --sample_depth ${params.merge_sample_depth}
+    touch SPECIES/DONE
 fi
 echo "Done merging data"
 ls -lahtr SPECIES
@@ -244,6 +246,7 @@ input_string=\$( echo \$input_string | sed 's/^,//' )
 if [ -n $input_string ]; then
     echo "[GENES]: Input string is empty. Nothing to do here."
     mkdir -p GENES
+    touch GENES/NOT_ENOUGH_DATA
 else
     echo "Merging gene results"
     merge_midas.py \
@@ -253,6 +256,7 @@ else
         -t list \
         -d ${params.db_midas} \
         --sample_depth ${params.merge_sample_depth}
+    touch GENES/DONE
 fi
 echo "Done merging data"
 ls -lahtr GENES
@@ -296,6 +300,7 @@ input_string=\$( echo \$input_string | sed 's/^,//' )
 if [ -n $input_string ]; then
     echo "[SNPS]: Input string is empty. Nothing to do here."
     mkdir -p SNPS
+    touch SNPS/NOT_ENOUGH_DATA
 else
     echo "Merging snps results"
     merge_midas.py \
@@ -305,9 +310,9 @@ else
         -t list \
         -d ${params.db_midas} \
         --sample_depth ${params.merge_sample_depth}
+    touch SNPS/DONE
 fi
 echo "Done merging data"
-touch SNPS/DONE
 ls -lahtr SNPS
 echo "Compressing output files"
 find SNPS -type f | xargs gzip
