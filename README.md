@@ -56,7 +56,8 @@ By default, the outdir is `s3://genomics-workflow-core/Results/midas/<PROJECT>/`
 - Species Analysis from MiDAS
 - Gene Analysis from MiDAS
 - SNP Analysis from MiDAS
-- Merged files for Species, Genes, and SNP analysis
+- Merged files for Species analysis
+- Optional merged files for Genes and SNP analysis
 
 ## Options
 
@@ -69,6 +70,12 @@ By default, the outdir is `s3://genomics-workflow-core/Results/midas/<PROJECT>/`
 - The manifest is a CSV with a header indicating which samples correspond to which files.
 - The file must contain a column `sampleName`. This value can not be repeated.
 - Reads are specified by columns, `R1` and `R2`.
+- Below is an example manifest file
+```bash
+sampleName,R1,R2
+EHECv3-121823-deltaFirmi-C1M1,s3://maf-sequencing/Illumina/20240626_LH00572_0050_A22MHTTLT3/AC-Metagenomics/MAF_20240411_AGC-mNGS_A01_P4_S286_R1_001.fastq.gz,s3://maf-sequencing/Illumina/20240626_LH00572_0050_A22MHTTLT3/AC-Metagenomics/MAF_20240411_AGC-mNGS_A01_P4_S286_R2_001.fastq.gz
+EHECv3-121823-deltaFirmi-C1M2,s3://maf-sequencing/Illumina/20240626_LH00572_0050_A22MHTTLT3/AC-Metagenomics/MAF_20240411_AGC-mNGS_A02_P4_S287_R1_001.fastq.gz,s3://maf-sequencing/Illumina/20240626_LH00572_0050_A22MHTTLT3/AC-Metagenomics/MAF_20240411_AGC-mNGS_A02_P4_S287_R2_001.fastq.gz
+```
 
 ## Software Incorporated
 
